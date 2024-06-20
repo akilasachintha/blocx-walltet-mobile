@@ -1,23 +1,21 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
-import {useFonts} from 'expo-font';
-import {Stack} from 'expo-router';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import {useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import 'react-native-reanimated';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {useColorScheme} from '@/components/useColorScheme';
-import {NativeWindStyleSheet} from "nativewind";
+import { useColorScheme } from '@/components/useColorScheme';
+import { NativeWindStyleSheet } from 'nativewind';
 
-export {
-	ErrorBoundary,
-} from 'expo-router';
+export { ErrorBoundary } from 'expo-router';
 
-SplashScreen.preventAutoHideAsync().catch(() => {
-});
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 NativeWindStyleSheet.setOutput({
-	default: "native",
+	default: 'native',
 });
 
 export default function RootLayout() {
@@ -25,23 +23,51 @@ export default function RootLayout() {
 		SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
 		...FontAwesome.font,
 	});
+	const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+	const [isCheckingLogin, setIsCheckingLogin] = useState<boolean>(true);
+	const segments = useSegments();
+	const router = useRouter();
 	
 	useEffect(() => {
 		if (error) throw error;
 	}, [error]);
 	
 	useEffect(() => {
-		if (loaded) {
-			SplashScreen.hideAsync().catch(() => {
-			});
-		}
-	}, [loaded]);
+		const checkLoginStatus = async () => {
+			try {
+				const value = await AsyncStorage.getItem('isLoggedIn');
+				setIsLoggedIn(value === 'true');
+			} catch (e) {
+				console.error('Failed to fetch the login status.');
+			} finally {
+				setIsCheckingLogin(false);
+			}
+		};
+		
+		checkLoginStatus().catch(() => {});
+	}, []);
 	
-	if (!loaded) {
+	useEffect(() => {
+		if (loaded && !isCheckingLogin) {
+			SplashScreen.hideAsync().catch(() => {});
+		}
+	}, [loaded, isCheckingLogin]);
+	
+	useEffect(() => {
+		if (!isCheckingLogin && loaded) {
+			if (isLoggedIn) {
+				router.replace('');
+			} else {
+				router.replace('/auth/SignUpLoginScreen');
+			}
+		}
+	}, [isCheckingLogin, isLoggedIn, loaded]);
+	
+	if (!loaded || isCheckingLogin) {
 		return null;
 	}
 	
-	return <RootLayoutNav/>;
+	return <RootLayoutNav />;
 }
 
 function RootLayoutNav() {
@@ -49,14 +75,14 @@ function RootLayoutNav() {
 	
 	return (
 		<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-			<Stack initialRouteName="index">
-				<Stack.Screen name="index" options={{headerShown: false}}/>
-				<Stack.Screen name="auth/SignUpLoginScreen" options={{headerShown: false}}/>
-				<Stack.Screen name="auth/SignUpScreen" options={{headerShown: false}}/>
-				<Stack.Screen name="main/LoginPrivateKeyScreen" options={{headerShown: false}}/>
-				<Stack.Screen name="main/SendTokenScreen" options={{headerShown: false}}/>
-				<Stack.Screen name="main/requests/RequestsScreen" options={{headerShown: false}}/>
-				<Stack.Screen name="main/requests/[id]" options={{headerShown: false}}/>
+			<Stack>
+				<Stack.Screen name="index" options={{ headerShown: false }} />
+				<Stack.Screen name="auth/SignUpLoginScreen" options={{ headerShown: false }} />
+				<Stack.Screen name="auth/SignUpScreen" options={{ headerShown: false }} />
+				<Stack.Screen name="auth/LoginPrivateKeyScreen" options={{ headerShown: false }} />
+				<Stack.Screen name="main/SendTokenScreen" options={{ headerShown: false }} />
+				<Stack.Screen name="main/requests/RequestsScreen" options={{ headerShown: false }} />
+				<Stack.Screen name="main/requests/[id]" options={{ headerShown: false }} />
 			</Stack>
 		</ThemeProvider>
 	);
