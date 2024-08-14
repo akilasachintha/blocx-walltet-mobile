@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "blocx-walltet-mobile",
-    "slug": "blocx-walltet-mobile",
+    "name": "Blocx",
+    "slug": "blocx",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,7 +19,9 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.blocx",
+      "versionCode": 2
     },
     "web": {
       "bundler": "metro",
@@ -30,8 +32,15 @@
       "expo-router",
       "expo-font"
     ],
-    "experiments": {
-      "typedRoutes": true
-    }
+    "experiments": {},
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "31d01313-7906-40bb-8c68-6e192b039bbc"
+      }
+    },
+    "owner": "blocx"
   }
 }

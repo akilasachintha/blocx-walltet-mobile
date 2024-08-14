@@ -1,5 +1,5 @@
 {
-  "name": "blocx-walltet-mobile",
+  "name": "blocx",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {

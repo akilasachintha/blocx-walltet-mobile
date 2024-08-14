@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { NativeWindStyleSheet } from 'nativewind';
+import ViewMyChainScreen from "@/app/main/ViewMyChainScreen";
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -39,6 +40,7 @@ export default function RootLayout() {
 				setIsLoggedIn(value === 'true');
 			} catch (e) {
 				console.error('Failed to fetch the login status.');
+				setIsLoggedIn(false);
 			} finally {
 				setIsCheckingLogin(false);
 			}
@@ -55,10 +57,11 @@ export default function RootLayout() {
 	
 	useEffect(() => {
 		if (!isCheckingLogin && loaded) {
+			console.log(isLoggedIn);
 			if (isLoggedIn) {
-				router.replace('');
+				router.navigate('/');
 			} else {
-				router.replace('/auth/SignUpLoginScreen');
+				router.navigate('/auth/SignUpLoginScreen');
 			}
 		}
 	}, [isCheckingLogin, isLoggedIn, loaded]);
@@ -81,8 +84,11 @@ function RootLayoutNav() {
 				<Stack.Screen name="auth/SignUpScreen" options={{ headerShown: false }} />
 				<Stack.Screen name="auth/LoginPrivateKeyScreen" options={{ headerShown: false }} />
 				<Stack.Screen name="main/SendTokenScreen" options={{ headerShown: false }} />
+				<Stack.Screen name="main/ViewMyChainScreen" options={{ headerShown: false }} />
 				<Stack.Screen name="main/requests/RequestsScreen" options={{ headerShown: false }} />
 				<Stack.Screen name="main/requests/[id]" options={{ headerShown: false }} />
+				<Stack.Screen name="main/validationRequests/RequestsScreen" options={{ headerShown: false }} />
+				<Stack.Screen name="main/validationRequests/[id]" options={{ headerShown: false }} />
 			</Stack>
 		</ThemeProvider>
 	);

@@ -1,5 +1,5 @@
-import { Stack, useRouter } from 'expo-router';
-import { Text, View, TouchableOpacity } from 'react-native';
+import {Stack, useRouter} from 'expo-router';
+import {Text, TouchableOpacity, View} from 'react-native';
 
 export default function SignUpLoginScreen() {
 	const router = useRouter();

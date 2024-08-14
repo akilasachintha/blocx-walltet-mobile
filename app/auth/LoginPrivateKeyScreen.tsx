@@ -29,7 +29,7 @@ const LoginPrivateKeyScreen: React.FC = () => {
 		setLoading(true);
 		
 		const requestData: LoginRequest = {
-			private_key: "MHQCAQEEIEkCUCRPQLqMFxWDW+008qX4wFaUaS3whZv3SFo4dPykoAcGBSuBBAAKoUQDQgAEJGXCB7aYoOA3KiVa8oFo9e19JRKv1JS6uer+cOwyEcD9XbwAdcH7WFXGzne7d+WSmsHi6iYtZq/s4M+LVZp96w==",
+			private_key: privateKey,
 		};
 		
 		try {
@@ -39,6 +39,7 @@ const LoginPrivateKeyScreen: React.FC = () => {
 			if (response.data.state) {
 				await AsyncStorage.setItem('isLoggedIn', 'true');
 				await AsyncStorage.setItem('walletData', JSON.stringify(response.data));
+				await AsyncStorage.setItem('privateKey', privateKey);
 				router.replace('');
 			} else {
 				Alert.alert('Login Failed', 'Invalid private key');

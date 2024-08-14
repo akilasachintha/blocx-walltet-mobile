@@ -24,7 +24,7 @@ interface Request {
 	user_score: number;
 }
 
-interface WalletData {
+export interface WalletData {
 	public_key: string;
 }
 
@@ -42,7 +42,7 @@ const RequestsScreen: React.FC = () => {
 					return;
 				}
 				const walletData: WalletData = JSON.parse(walletDataString);
-				const response = await axios.post<Request[]>('https://www.blockxserver.xyz/wallet/get_requests', {
+				const response = await axios.post<Request[]>('https://www.blockxserver.xyz/wallet/get_validation_requests', {
 					public_key: walletData.public_key,
 				});
 				setRequests(response.data);
@@ -84,7 +84,7 @@ const RequestsScreen: React.FC = () => {
 								className="border flex-row border-gray-300 p-4 rounded-lg w-full flex justify-between items-center shadow-sm"
 								onPress={() =>
 									router.push({
-										pathname: `/main/requests/${request.id}`,
+										pathname: `/main/validationRequests/${request.id}`,
 										params: {request: JSON.stringify(request)},
 									})
 								}
